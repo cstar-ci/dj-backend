@@ -43,7 +43,6 @@ $route['404_override'] = 'error';
 
 
 /*********** USER DEFINED ROUTES *******************/
-
 $route['loginMe'] = 'login/loginMe';
 $route['dashboard'] = 'user';
 $route['logout'] = 'user/logout';
@@ -101,6 +100,9 @@ $route['saveResponse'] = "response/saveResponse";
 /**
  *Backend
  */
+$route['register'] = 'authenticate/register';
+$route['login'] = 'authenticate/login';
+$route['resetpassword'] = 'authenticate/resetPassword';
 
 $route['getgenreslist'] = 'genres/getGenresList';
 $route['getdjslist'] = 'djs/getDJsList';

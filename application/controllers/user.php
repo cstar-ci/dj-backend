@@ -132,8 +132,7 @@ class User extends BaseController
                 $roleId = $this->input->post('role');
                 $mobile = $this->input->post('mobile');
                 
-                $userInfo = array('email'=>$email, 'password'=>getHashedPassword($password), 'roleId'=>$roleId, 'name'=> $name,
-                                    'mobile'=>$mobile, 'createdBy'=>$this->vendorId, 'createdDtm'=>date('Y-m-d H:i:s'));
+                $userInfo = array('email'=>$email, 'password'=>getHashedPassword($password), 'roleId'=>$roleId, 'name'=> $name, 'mobile'=>$mobile, 'createdBy'=>$this->vendorId, 'createdDtm'=>date('Y-m-d H:i:s'));
                 
                 $this->load->model('user_model');
                 $result = $this->user_model->addNewUser($userInfo);
@@ -151,7 +150,6 @@ class User extends BaseController
             }
         }
     }
-
     
     /**
      * This function is used load user edit information
@@ -178,7 +176,6 @@ class User extends BaseController
             $this->loadViews("editOld", $this->global, $data, NULL);
         }
     }
-    
     
     /**
      * This function is used to edit the user information
@@ -244,7 +241,6 @@ class User extends BaseController
         }
     }
 
-
     /**
      * This function is used to delete the user using userId
      * @return boolean $result : TRUE / FALSE
@@ -276,7 +272,6 @@ class User extends BaseController
         
         $this->loadViews("changePassword", $this->global, NULL, NULL);
     }
-    
     
     /**
      * This function is used to change the password of the user

@@ -42,8 +42,7 @@ class Login extends CI_Controller
             redirect('/index.php/dashboard');
         }
     }
-    
-    
+
     /**
      * This function used to logged in user
      */
