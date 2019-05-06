@@ -445,12 +445,222 @@ class Music extends BaseController
                 'created_at' => date('Y-m-d H:i:s')
             ));
 
-            echo json_encode(array('status' => "success", 'result' => $musicInfo, 'duration' => $duration));
+            $this->load->model('comment_model');
+            $comments = $this->comment_model->listComments($mid);
+
+            echo json_encode(array('status' => "success", 'result' => $musicInfo, 'comments' => $comments));
         } else {
             echo json_encode(array('status' => "failed", 'msg' => "Music data is not valid."));
         }
 
 
+    }
+
+    public function likeMusic() {
+        $this->load->model('customer_model');
+        $this->load->model('like_model');
+
+        $email = $this->input->post('email');
+        $music = $this->input->post('music_id');
+
+        /* Get user detail */
+        if ($email) {
+            $user = $this->customer_model->getUserInfo($email);
+        } else {
+            echo json_encode(array('status' => "failed", 'msg' => "Your email doesn't exist."));
+            exit(1);
+        }
+
+        if (!$user || !$user[0]) {
+            echo json_encode(array('status' => "failed", 'msg' => "This user doesn't exist."));
+            exit(1);
+        }
+
+        /* Check if music is already liked */
+        $user = $user[0];
+        if ($music) {
+            $checkResult = $this->like_model->checkIsLiked($user->id, $music);
+        } else {
+            echo json_encode(array('status' => "failed", 'msg' => "Music ID is empty."));
+            exit(1);
+        }
+
+        if ( !$checkResult ) {
+            $info = array('user_id' => $user->id, 'music_id' => $music, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s'));
+            $result = $this->like_model->addLike($info);
+
+            if ($result) {
+                echo json_encode(array('status' => "success", 'msg' => "You liked this music successfully."));
+            } else {
+                echo json_encode(array('status' => "failed", 'msg' => "Your request was not completed. There is some problem."));
+            }
+        } else {
+            $oldInfo = $checkResult[0];
+            if (!$oldInfo->status) {
+                $this->like_model->updateLike($user->id, array('status' => 1, 'updated_at' => date('Y-m-d H:i:s')));
+                echo json_encode(array('status' => "success", 'msg' => "You liked this music successfully."));
+            } else {
+                echo json_encode(array('status' => "failed", 'msg' => "You already liked this music."));
+            }
+        }
+
+        exit(1);
+    }
+
+    public function disLikeMusic() {
+        $this->load->model('customer_model');
+        $this->load->model('like_model');
+
+        $email = $this->input->post('email');
+        $music = $this->input->post('music_id');
+
+        /* Get user detail */
+        if ($email) {
+            $user = $this->customer_model->getUserInfo($email);
+        } else {
+            echo json_encode(array('status' => "failed", 'msg' => "Your email doesn't exist."));
+            exit(1);
+        }
+
+        if (!$user || !$user[0]) {
+            echo json_encode(array('status' => "failed", 'msg' => "This user doesn't exist."));
+            exit(1);
+        }
+
+        /* Check if music is already liked */
+        $user = $user[0];
+        if ($music) {
+            $checkResult = $this->like_model->checkIsLiked($user->id, $music);
+        } else {
+            echo json_encode(array('status' => "failed", 'msg' => "Music ID is empty."));
+            exit(1);
+        }
+
+        if ( $checkResult ) {
+            $result = $this->like_model->updateLike($user->id, array('status' => 0, 'updated_at' => date('Y-m-d H:i:s')));
+
+            if ($result) {
+                echo json_encode(array('status' => "success", 'msg' => "Success"));
+            } else {
+                echo json_encode(array('status' => "failed", 'msg' => "Your request was not completed. There is some problem."));
+            }
+        } else {
+            echo json_encode(array('status' => "failed", 'msg' => "You never liked this music."));
+        }
+
+        exit(1);
+    }
+
+    public function addComment() {
+        $this->load->model('customer_model');
+        $this->load->model('comment_model');
+
+        $email = $this->input->post('email');
+        $music = $this->input->post('music_id');
+        $comment = $this->input->post('comment');
+
+        /* Get user detail */
+        if ($email) {
+            $user = $this->customer_model->getUserInfo($email);
+        } else {
+            echo json_encode(array('status' => "failed", 'msg' => "Your email doesn't exist."));
+            exit(1);
+        }
+
+        if (!$user || !$user[0]) {
+            echo json_encode(array('status' => "failed", 'msg' => "This user doesn't exist."));
+            exit(1);
+        }
+
+        /* Add new comment */
+        $user = $user[0];
+        if ( !$music || !$comment ) {
+            echo json_encode(array('status' => "failed", 'msg' => "Parameter is missing."));
+            exit(1);
+        }
+
+        $info = array('user_id' => $user->id, 'music_id' => $music, 'comment' => $comment, 'is_deleted' => 0, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s'));
+        $result = $this->comment_model->addComment($info);
+
+        if ($result) {
+            echo json_encode(array('status' => "success", 'msg' => "You commented this music successfully.", 'comment_id' => $result));
+        } else {
+            echo json_encode(array('status' => "failed", 'msg' => "Your request was not completed. There is some problem."));
+        }
+
+        exit(1);
+    }
+
+    public function updateComment() {
+        $this->load->model('customer_model');
+        $this->load->model('comment_model');
+
+        $email = $this->input->post('email');
+        $commentId = $this->input->post('comment_id');
+        $comment = $this->input->post('comment');
+
+        /* Get user detail */
+        if ($email) {
+            $user = $this->customer_model->getUserInfo($email);
+        } else {
+            echo json_encode(array('status' => "failed", 'msg' => "Your email doesn't exist."));
+            exit(1);
+        }
+
+        if (!$user || !$user[0]) {
+            echo json_encode(array('status' => "failed", 'msg' => "This user doesn't exist."));
+            exit(1);
+        }
+
+        $user = $user[0];
+        if ( !$comment ) {
+            echo json_encode(array('status' => "failed", 'msg' => "Parameter is missing."));
+            exit(1);
+        }
+
+        $info = array('comment' => $comment, 'updated_at' => date('Y-m-d H:i:s'));
+        $result = $this->comment_model->updateComment($commentId, $user->id, $info);
+
+        if ($result) {
+            echo json_encode(array('status' => "success", 'msg' => "You commented this music successfully."));
+        } else {
+            echo json_encode(array('status' => "failed", 'msg' => "Your request was not completed. There is some problem."));
+        }
+
+        exit(1);
+    }
+
+    public function deleteComment() {
+        $this->load->model('customer_model');
+        $this->load->model('comment_model');
+
+        $email = $this->input->post('email');
+        $commentId = $this->input->post('comment_id');
+
+        /* Get user detail */
+        if ($email) {
+            $user = $this->customer_model->getUserInfo($email);
+        } else {
+            echo json_encode(array('status' => "failed", 'msg' => "Your email doesn't exist."));
+            exit(1);
+        }
+
+        if (!$user || !$user[0]) {
+            echo json_encode(array('status' => "failed", 'msg' => "This user doesn't exist."));
+            exit(1);
+        }
+
+        $user = $user[0];
+        $info = array('is_deleted' => 1, 'updated_at' => date('Y-m-d H:i:s'));
+        $result = $this->comment_model->updateComment($commentId, $user->id, $info);
+
+        if ($result) {
+            echo json_encode(array('status' => "success", 'msg' => "You delted the comment successfully."));
+        } else {
+            echo json_encode(array('status' => "failed", 'msg' => "Your request was not completed. There is some problem."));
+        }
+
+        exit(1);
     }
 }
 

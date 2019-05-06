@@ -117,6 +117,23 @@ class Customer_model extends CI_Model
         
         return $this->db->affected_rows();
     }
+
+    /**
+     * This function used to get user information by id
+     * @param number $userId : This is user id
+     * @return array $result : This is user information
+     */
+    function getUserInfo($email)
+    {
+        $this->db->select('*');
+        $this->db->from('tbl_customers');
+        $this->db->where('isDeleted', 0);
+        $this->db->where('email', $email);
+        $query = $this->db->get();
+
+        return $query->result();
+    }
+
 }
 
   

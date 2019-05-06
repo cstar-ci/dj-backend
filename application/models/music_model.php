@@ -40,7 +40,7 @@ class Music_model extends CI_Model
      */
     function musicListing($searchText = '', $ids = null, $page = null, $segment = null)
     {
-        $this->db->select('BaseTbl.id, BaseTbl.name, BaseTbl.description, BaseTbl.thumb, BaseTbl.music, BaseTbl.duration, DjTbl.name as DJ, DjTbl.avatar_url as djAvatar, GrTbl.name as genre, BaseTbl.created_date');
+        $this->db->select('BaseTbl.id, BaseTbl.name, BaseTbl.description, BaseTbl.thumb, BaseTbl.music, BaseTbl.duration, DjTbl.name as DJ, DjTbl.avatar_url as djAvatar, GrTbl.name as genre, BaseTbl.created_date, (select count(*) from tbl_likes Where music_id = BaseTbl.id) as likes');
         $this->db->from($this->table_name . ' as BaseTbl');
         $this->db->join($this->table_djs . ' as DjTbl', 'DjTbl.id = BaseTbl.dj','left');
         $this->db->join($this->table_genres . ' as GrTbl', 'GrTbl.id = BaseTbl.genre','left');
@@ -72,7 +72,7 @@ class Music_model extends CI_Model
 
     function musicListingWithGenre($genreId, $searchText = '', $page = null, $segment = null)
     {
-        $this->db->select('BaseTbl.id, BaseTbl.name, BaseTbl.description, BaseTbl.thumb, BaseTbl.music, BaseTbl.duration, DjTbl.name as DJ, DjTbl.avatar_url as djAvatar, GrTbl.name as genre, BaseTbl.created_date');
+        $this->db->select('BaseTbl.id, BaseTbl.name, BaseTbl.description, BaseTbl.thumb, BaseTbl.music, BaseTbl.duration, DjTbl.name as DJ, DjTbl.avatar_url as djAvatar, GrTbl.name as genre, BaseTbl.created_date, (select count(*) from tbl_likes Where music_id = BaseTbl.id) as likes');
         $this->db->from($this->table_name . ' as BaseTbl');
         $this->db->join($this->table_djs . ' as DjTbl', 'DjTbl.id = BaseTbl.dj','left');
         $this->db->join($this->table_genres . ' as GrTbl', 'GrTbl.id = BaseTbl.genre','left');
@@ -101,7 +101,7 @@ class Music_model extends CI_Model
 
     function musicListingWithDJ($djId, $searchText = '', $page = null, $segment = null)
     {
-        $this->db->select('BaseTbl.id, BaseTbl.name, BaseTbl.description, BaseTbl.thumb, BaseTbl.music, BaseTbl.duration, DjTbl.name as DJ, DjTbl.avatar_url as djAvatar, GrTbl.name as genre, BaseTbl.created_date');
+        $this->db->select('BaseTbl.id, BaseTbl.name, BaseTbl.description, BaseTbl.thumb, BaseTbl.music, BaseTbl.duration, DjTbl.name as DJ, DjTbl.avatar_url as djAvatar, GrTbl.name as genre, BaseTbl.created_date, (select count(*) from tbl_likes Where music_id = BaseTbl.id) as likes');
         $this->db->from($this->table_name . ' as BaseTbl');
         $this->db->join($this->table_djs . ' as DjTbl', 'DjTbl.id = BaseTbl.dj','left');
         $this->db->join($this->table_genres . ' as GrTbl', 'GrTbl.id = BaseTbl.genre','left');
@@ -151,7 +151,7 @@ class Music_model extends CI_Model
      */
     function getMusicInfo($musicId)
     {
-        $this->db->select('*');
+        $this->db->select("*, (select count(*) from tbl_likes Where music_id = $musicId) as likes");
         $this->db->from($this->table_name);
         $this->db->where('isDeleted', 0);
         $this->db->where('id', $musicId);

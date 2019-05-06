@@ -114,3 +114,10 @@ $route['getmusicinfo/(:num)'] = 'music/getMusicPlay/$1';
 $route['sendrequest'] = 'contact/sendEmail';
 $route['regist_token'] = 'authenticate/registerToken';
 $route['sendnotification/(:any)'] = 'music/sendNotification/$1';
+
+$route['like-music'] = 'music/likeMusic';
+$route['dislike-music'] = 'music/disLikeMusic';
+
+$route['add-comment'] = 'music/addComment';
+$route['update-comment'] = 'music/updateComment';
+$route['delete-comment'] = 'music/deleteComment';
