@@ -61,40 +61,40 @@ class Contact extends CI_Controller
     }
 
     /**
-     * This function used to generate reset password request link
+     * This function used to invite the DJ to the music event
      */
-    function sendRequest()
-    {
-        $this->load->helper('string');
-        $email = $this->input->post('sender_email');;
-        $firstName = $this->input->post('first_name');
-        $lastName = $this->input->post('last_name');
-        $djPref = $this->input->post('dj_pref');
-        $eventDate = $this->input->post('event_date');
-        $eventName = $this->input->post('event_name');
-
-        if ($djPref) {
-            $this->load->model('djs_model');
-            $dj = $this->djs_model->getDJsInfo($djPref);
-        }
-
-        if (count($dj)) {
-            $dj = $dj[0];
-
-            $this->email->from("djbitz1530@yahoo.com", $firstName . $lastName);
-            $this->email->to("mrg8406@gmail.com");
-            $this->email->subject("You have received the Event Request from $firstName $lastName");
-            $this->email->message("$firstName $lastName requested $dj->name to the new event $eventName on $eventDate.");
-
-            if($this->email->send())
-                echo json_encode(array('status' => "success", 'msg' => "Congratulation Email Send Successfully."));
-            else
-                echo var_dump($this->email->print_debugger());
-        } else {
-            echo json_encode(array('status' => 'failed', 'msg' => "DJ is not available"));
-        }
-
-    }
+//    function sendRequest()
+//    {
+//        $this->load->helper('string');
+//        $email = $this->input->post('sender_email');;
+//        $firstName = $this->input->post('first_name');
+//        $lastName = $this->input->post('last_name');
+//        $djPref = $this->input->post('dj_pref');
+//        $eventDate = $this->input->post('event_date');
+//        $eventName = $this->input->post('event_name');
+//
+//        if ($djPref) {
+//            $this->load->model('djs_model');
+//            $dj = $this->djs_model->getDJsInfo($djPref);
+//        }
+//
+//        if (count($dj)) {
+//            $dj = $dj[0];
+//
+//            $this->email->from("djbitz1530@yahoo.com", $firstName . $lastName);
+//            $this->email->to("mrg8406@gmail.com");
+//            $this->email->subject("You have received the Event Request from $firstName $lastName");
+//            $this->email->message("$firstName $lastName requested $dj->name to the new event $eventName on $eventDate.");
+//
+//            if($this->email->send())
+//                echo json_encode(array('status' => "success", 'msg' => "Congratulation Email Send Successfully."));
+//            else
+//                echo var_dump($this->email->print_debugger());
+//        } else {
+//            echo json_encode(array('status' => 'failed', 'msg' => "DJ is not available"));
+//        }
+//
+//    }
 
     function sendEmail(){
         $this->load->helper('string');
@@ -104,6 +104,7 @@ class Contact extends CI_Controller
         $djPref = $this->input->post('dj_pref');
         $eventDate = $this->input->post('event_date');
         $eventName = $this->input->post('event_name');
+        $note = $this->input->post('note');
 
         if ($djPref) {
             $this->load->model('djs_model');
@@ -131,7 +132,8 @@ class Contact extends CI_Controller
                 //Content
                 $mail->isHTML(true);                                  // Set email format to HTML
                 $mail->Subject = "You have received the Event Request from $firstName $lastName";
-                $mail->Body    = "$firstName $lastName requested $dj->name ( $email ) to the new event $eventName on $eventDate.";
+                $mail->Body    = "<h2>$firstName $lastName ( $email ) requested $dj->name to the new event $eventName on $eventDate.</h2> \r\n";
+                $mail->Body .= "<p>$note</p>";
                 $mail->AltBody = "$firstName $lastName requested $dj->name to the new event $eventName on $eventDate.";
 
                 $mail->send();
