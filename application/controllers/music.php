@@ -435,8 +435,9 @@ class Music extends BaseController
         echo json_encode(array('status' => $status, 'msg' => $msg, 'result' => $data));
     }
 
-    public function getMusicPlay($mid) {
+    public function getMusicPlay() {
         $uid = $this->input->post('uid');
+        $mid = $this->input->post('mid');
         $musicInfo = $this->music_model->getMusicInfo($mid);
 
         if ($musicInfo) {
