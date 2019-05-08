@@ -53,6 +53,21 @@ class Playlog_model extends CI_Model
         return $insert_id;
     }
 
+    /**
+     * This function is used to add new playlog to system
+     * @param number $musicId : This is the id of music
+     * @return number $insert_id : This is last inserted id
+     */
+    function playout($musicId) {
+        $this->db->select('COUNT(*) as count');
+        $this->db->from($this->table_name);
+        $this->db->where('music_id', $musicId);
+
+        $query = $this->db->get();
+
+        $result = $query->result();
+        return $result;
+    }
 }
 
   

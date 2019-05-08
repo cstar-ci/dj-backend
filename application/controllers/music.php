@@ -436,6 +436,7 @@ class Music extends BaseController
     }
 
     public function getMusicPlay($mid) {
+        $uid = $this->input->post('uid');
         $musicInfo = $this->music_model->getMusicInfo($mid);
 
         if ($musicInfo) {
@@ -445,10 +446,16 @@ class Music extends BaseController
                 'created_at' => date('Y-m-d H:i:s')
             ));
 
+            $this->load->model('playlog_model');
+            $playCount = $this->playlog_model->playout($mid);
+
+            $this->load->model('like_model');
+            $isLiked = $this->like_model->checkIsLiked($uid, $mid);
+
             $this->load->model('comment_model');
             $comments = $this->comment_model->listComments($mid);
 
-            echo json_encode(array('status' => "success", 'result' => $musicInfo, 'comments' => $comments));
+            echo json_encode(array('status' => "success", 'result' => $musicInfo, 'comments' => $comments, 'is_liked' => $isLiked, 'play_count' => $playCount));
         } else {
             echo json_encode(array('status' => "failed", 'msg' => "Music data is not valid."));
         }
