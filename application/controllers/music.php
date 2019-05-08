@@ -316,6 +316,7 @@ class Music extends BaseController
      * Mobile API
      */
     public function getMusicList() {
+        $uid = $this->input->post('uid');
         $searchText = $this->input->post('searchText');
         $data['searchText'] = $searchText;
 
@@ -327,7 +328,7 @@ class Music extends BaseController
         $result_set = array();
         if (count($count) > 0) {
 
-            $data['musicRecords'] = $this->music_model->musicListing($searchText);
+            $data['musicRecords'] = $this->music_model->musicListing($uid, $searchText);
 
             if (is_array($data['musicRecords'])) {
                 foreach ($data['musicRecords'] as $music) {
@@ -350,7 +351,7 @@ class Music extends BaseController
     }
 
     public function getTopMusicList() {
-
+        $uid = $this->input->post('uid');
         $this->load->model("playlog_model");
         $topPlayLogs = $this->playlog_model->playlogListing();
 
@@ -364,7 +365,7 @@ class Music extends BaseController
             exit;
         }
 
-        $topTenMusicLists = $this->music_model->musicListing('', $topTenMusicIds);
+        $topTenMusicLists = $this->music_model->musicListing($uid, '', $topTenMusicIds);
         if ($topTenMusicLists) {
             if (is_array($topTenMusicLists)) {
                 $newList = array();
@@ -387,7 +388,9 @@ class Music extends BaseController
         }
     }
 
-    public function getMusicsWithGenre($genreId) {
+    public function getMusicsWithGenre() {
+        $uid = $this->input->post('uid');
+        $genreId = $this->input->post('genreId');
         $searchText = $this->input->post('searchText');
         $data['searchText'] = $searchText;
 
@@ -399,7 +402,7 @@ class Music extends BaseController
         $result_set = array();
         if (count($count) > 0) {
 
-            $data['musicRecords'] = $this->music_model->musicListingWithGenre($genreId, $searchText);
+            $data['musicRecords'] = $this->music_model->musicListingWithGenre($uid, $genreId, $searchText);
 
             $status = "success";
             $msg = "Success!";
@@ -411,7 +414,9 @@ class Music extends BaseController
         echo json_encode(array('status' => $status, 'msg' => $msg, 'result' => $data));
     }
 
-    public function getMusicsWithDJ($djId) {
+    public function getMusicsWithDJ() {
+        $uid = $this->input->post('uid');
+        $djId = $this->input->post('djId');
         $searchText = $this->input->post('searchText');
         $data['searchText'] = $searchText;
 
@@ -423,7 +428,7 @@ class Music extends BaseController
         $result_set = array();
         if (count($count) > 0) {
 
-            $data['musicRecords'] = $this->music_model->musicListingWithDJ($djId, $searchText);
+            $data['musicRecords'] = $this->music_model->musicListingWithDJ($uid, $djId, $searchText);
 
             $status = "success";
             $msg = "Success!";
@@ -450,8 +455,12 @@ class Music extends BaseController
             $this->load->model('playlog_model');
             $playCount = $this->playlog_model->playout($mid);
 
-            $this->load->model('like_model');
-            $isLiked = $this->like_model->checkIsLiked($uid, $mid);
+            $isLiked = false;
+                $this->load->model('like_model');
+            if ($this->like_model->checkIsLiked($uid, $mid)) {
+                $isLiked = true;
+            }
+
 
             $this->load->model('comment_model');
             $comments = $this->comment_model->listComments($mid);

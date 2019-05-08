@@ -38,9 +38,9 @@ class Music_model extends CI_Model
      * @param number $segment : This is pagination limit
      * @return array $result : This is result
      */
-    function musicListing($searchText = '', $ids = null, $page = null, $segment = null)
+    function musicListing($uid, $searchText = '', $ids = null, $page = null, $segment = null)
     {
-        $this->db->select('BaseTbl.id, BaseTbl.name, BaseTbl.description, BaseTbl.thumb, BaseTbl.music, BaseTbl.duration, DjTbl.name as DJ, DjTbl.avatar_url as djAvatar, GrTbl.name as genre, BaseTbl.created_date, (select count(*) from tbl_likes Where music_id = BaseTbl.id) as likes, (select count(*) from tbl_playlog Where music_id = BaseTbl.id) as playCounts');
+        $this->db->select("BaseTbl.id, BaseTbl.name, BaseTbl.description, BaseTbl.thumb, BaseTbl.music, BaseTbl.duration, DjTbl.name as DJ, DjTbl.avatar_url as djAvatar, GrTbl.name as genre, BaseTbl.created_date, (select count(*) from tbl_likes Where music_id = BaseTbl.id) as likes, (select count(*) from tbl_likes Where music_id = BaseTbl.id and user_id = $uid) as is_liked, (select count(*) from tbl_playlog Where music_id = BaseTbl.id) as playCounts");
         $this->db->from($this->table_name . ' as BaseTbl');
         $this->db->join($this->table_djs . ' as DjTbl', 'DjTbl.id = BaseTbl.dj','left');
         $this->db->join($this->table_genres . ' as GrTbl', 'GrTbl.id = BaseTbl.genre','left');
@@ -70,9 +70,9 @@ class Music_model extends CI_Model
         return $result;
     }
 
-    function musicListingWithGenre($genreId, $searchText = '', $page = null, $segment = null)
+    function musicListingWithGenre($uid, $genreId, $searchText = '', $page = null, $segment = null)
     {
-        $this->db->select('BaseTbl.id, BaseTbl.name, BaseTbl.description, BaseTbl.thumb, BaseTbl.music, BaseTbl.duration, DjTbl.name as DJ, DjTbl.avatar_url as djAvatar, GrTbl.name as genre, BaseTbl.created_date, (select count(*) from tbl_likes Where music_id = BaseTbl.id) as likes, (select count(*) from tbl_playlog Where music_id = BaseTbl.id) as playCounts');
+        $this->db->select("BaseTbl.id, BaseTbl.name, BaseTbl.description, BaseTbl.thumb, BaseTbl.music, BaseTbl.duration, DjTbl.name as DJ, DjTbl.avatar_url as djAvatar, GrTbl.name as genre, BaseTbl.created_date, (select count(*) from tbl_likes Where music_id = BaseTbl.id) as likes, (select count(*) from tbl_likes Where music_id = BaseTbl.id and user_id = $uid) as is_liked, (select count(*) from tbl_playlog Where music_id = BaseTbl.id) as playCounts");
         $this->db->from($this->table_name . ' as BaseTbl');
         $this->db->join($this->table_djs . ' as DjTbl', 'DjTbl.id = BaseTbl.dj','left');
         $this->db->join($this->table_genres . ' as GrTbl', 'GrTbl.id = BaseTbl.genre','left');
@@ -99,9 +99,9 @@ class Music_model extends CI_Model
         return $result;
     }
 
-    function musicListingWithDJ($djId, $searchText = '', $page = null, $segment = null)
+    function musicListingWithDJ($uid, $djId, $searchText = '', $page = null, $segment = null)
     {
-        $this->db->select('BaseTbl.id, BaseTbl.name, BaseTbl.description, BaseTbl.thumb, BaseTbl.music, BaseTbl.duration, DjTbl.name as DJ, DjTbl.avatar_url as djAvatar, GrTbl.name as genre, BaseTbl.created_date, (select count(*) from tbl_likes Where music_id = BaseTbl.id) as likes, (select count(*) from tbl_playlog Where music_id = BaseTbl.id) as playCounts');
+        $this->db->select("BaseTbl.id, BaseTbl.name, BaseTbl.description, BaseTbl.thumb, BaseTbl.music, BaseTbl.duration, DjTbl.name as DJ, DjTbl.avatar_url as djAvatar, GrTbl.name as genre, BaseTbl.created_date, (select count(*) from tbl_likes Where music_id = BaseTbl.id) as likes, (select count(*) from tbl_likes Where music_id = BaseTbl.id and user_id = $uid) as is_liked, (select count(*) from tbl_playlog Where music_id = BaseTbl.id) as playCounts");
         $this->db->from($this->table_name . ' as BaseTbl');
         $this->db->join($this->table_djs . ' as DjTbl', 'DjTbl.id = BaseTbl.dj','left');
         $this->db->join($this->table_genres . ' as GrTbl', 'GrTbl.id = BaseTbl.genre','left');
