@@ -16,6 +16,7 @@ class Like_model extends CI_Model
         $this->db->from($this->_tablename);
         $this->db->where("user_id", $useId);
         $this->db->where("music_id", $musicId);
+        $this->db->where("status", 1);
         $query = $this->db->get();
 
         return $query->result();
