@@ -465,7 +465,7 @@ class Music extends BaseController
             $this->load->model('comment_model');
             $comments = $this->comment_model->listComments($mid);
 
-            echo json_encode(array('status' => "success", 'result' => $musicInfo, 'comments' => $comments, 'is_liked' => $isLiked, 'play_count' => $playCount));
+            echo json_encode(array('status' => "success", 'result' => $musicInfo, 'comments' => $comments, 'is_liked' => $isLiked, 'comment_count' => count($comments), 'play_count' => $playCount));
         } else {
             echo json_encode(array('status' => "failed", 'msg' => "Music data is not valid."));
         }
