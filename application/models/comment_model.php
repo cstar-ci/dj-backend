@@ -47,6 +47,8 @@ class Comment_model extends CI_Model
         $this->db->where('comments.is_deleted', 0);
         $this->db->join($this->_customersTable . ' as customer', 'comments.user_id = customer.id','left');
 
+        $this->db->order_by('comments.created_at', 'desc');
+
         $query = $this->db->get();
 
         $result = $query->result();
