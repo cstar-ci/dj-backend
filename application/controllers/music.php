@@ -72,7 +72,7 @@ class Music extends BaseController
 
 			$returns = $this->paginationCompress ( "musicListing/", $count, 5);
 
-            $this->global['musics'] = $this->music_model->musicListing($searchText, null, $returns["page"], $returns["segment"]);
+            $this->global['musics'] = $this->music_model->musicListing(null, $searchText, null, $returns["page"], $returns["segment"], $this->isAdmin());
 
             $this->loadViews("music/list", $this->global, null, NULL);
         }
